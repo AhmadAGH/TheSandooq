@@ -246,7 +246,6 @@ namespace TheSandooq.Controllers
                         // If user creation fails, return an error message
                         return RedirectToAction("Details", "Sandooqs", new { model.SandooqId, message = "تعذر انشاء المستخدم !", isSuccess = false });
                     }
-
                     // Get the newly created user from the database
                     member = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == member.Email);
                     // Send password reset link to new user
@@ -345,6 +344,8 @@ namespace TheSandooq.Controllers
         }
         public ActionResult AddIncome(AddIncomeViewModel model)
         {
+            ModelState.Remove("sandooqMembers");
+            ModelState.Remove("sandooqCategories");
             if (ModelState.IsValid)
             {
                 Income income = new Income();

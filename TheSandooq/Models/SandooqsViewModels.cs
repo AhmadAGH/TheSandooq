@@ -1,4 +1,6 @@
-﻿using Sanooqna.Models;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Sanooqna.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -49,12 +51,12 @@ namespace TheSandooq.Models
         [Display(Name = "الفئة")]
         [Required(ErrorMessage = "يجب اختيار الفئة")]
         public int categoryID { get; set; }
-        [Display(Name = "العضو")]
-   
         public string memberID { get; set; }
         public int sandooqID { get; set; }
-        
+
+        [BindNever]
         public List<Category> sandooqCategories { get; set; }
+        [BindNever]
         public List<ApplicationUser> sandooqMembers { get; set; }
     }
  

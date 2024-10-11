@@ -26,38 +26,38 @@
     <span class="badge bg-primary">
         اجمالي المدخولات
         @Model.TotalIncomes ريال
-        
-        
-            <button id="btnShowAddIncomeModal" class="btn btn-dark btn-sm">
-                <span class="fa fa-plus"></span>
-            </button>
-        
+
+
+        <button id="btnShowAddIncomeModal" class="btn btn-dark btn-sm">
+            <span class="fa fa-plus"></span>
+        </button>
+
 
     </span>
     <span class="badge bg-secondary">
         اجمالي المصاريف @Model.TotalExpenses ريال
-        
-        
-            <button id="btnShowAddExpenseModal" class="btn btn-dark btn-sm">
-                <span class="fa fa-plus"></span>
-            </button>
-        
+
+
+        <button id="btnShowAddExpenseModal" class="btn btn-dark btn-sm">
+            <span class="fa fa-plus"></span>
+        </button>
+
     </span>
     <span class="badge bg-info">
         الرصيد المتاح @Model.AvailableBalance ريال
-      
-            <button disabled class="btn btn-info btn-sm">
-                <span class="fa "></span>
-            </button>
-        
+
+        <button disabled class="btn btn-info btn-sm">
+            <span class="fa "></span>
+        </button>
+
     </span>
     <span class="badge bg-info">
         نسبة السداد: @Model.RepaymentRate %
-     
-            <button disabled class="btn btn-info btn-sm">
-                <span class="fa "></span>
-            </button>
-        
+
+        <button disabled class="btn btn-info btn-sm">
+            <span class="fa "></span>
+        </button>
+
     </span>
     <hr />
     <span class="card-title">الاعضاء:</span>
@@ -67,7 +67,7 @@
         @foreach (var member in Model.SandooqMembersDetails)
         {
             <div class="card card-block m-3" style="min-width: 300px;">
-                <div class="card-header">- 
+                <div class="card-header">
                     <div class="row">
                         @if (member.IsVerified)
                         {
@@ -100,7 +100,7 @@
                 <div class="card-footer">
                     @foreach (var category in member.CategoryAmounts)
                     {
-                        
+
                         if (category.Amount > 0)
                         {
                             <span class="badge @(category.IsIncome? "bg-primary" : "bg-secondary")">
@@ -114,9 +114,9 @@
         }
     </div>
     <hr />
-   
-        <button class="btn btn-outline-dark" id="btnShowAddMemberModal">اضافة عضو</button>
-    
+
+    <button class="btn btn-outline-dark" id="btnShowAddMemberModal">اضافة عضو</button>
+
     <hr />
     <span class="card-title">الفئات:</span>
     <br />
@@ -142,39 +142,41 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-body">
-                    @*@foreach (ApplicationUser member in Model.Sandooq.members)
-                    {
-                        double memberCategoryAmount = SandooqsController.GetTotalAmountByCategory(Model.Sandooq.id, category.id, member.Id).Result;
+                @* <div class="card-body">
+                    @foreach (ApplicationUser member in Model.Sandooq.members)
+                {
+                double memberCategoryAmount = SandooqsController.GetTotalAmountByCategory(Model.Sandooq.id, category.id, member.Id).Result;
 
-                        if (memberCategoryAmount > 0)
-                        {
-                            <span class="badge  @(category.isIncome? "bg-primary" : "bg-secondary")">@member.FullName - @memberCategoryAmount ريال</span>
-                        }
-                    }*@
-                </div>
+                if (memberCategoryAmount > 0)
+                {
+                <span class="badge  @(category.isIncome? "bg-primary" : "bg-secondary")">@member.FullName - @memberCategoryAmount ريال</span>
+                }
+                }
+                </div> *@
             </div>
         }
     </div>
     <hr />
-  
-        <button class="btn btn-outline-dark" id="btnShowAddCategoryModal">اضافة فئة</button>
-    
+
+    <button class="btn btn-outline-dark" id="btnShowAddCategoryModal">اضافة فئة</button>
+
     <hr />
 </div>
 
-@using (Html.BeginForm("AddMember", "Sandooqs", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-{
-    @Html.AntiForgeryToken()
-    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
-    <div class="modal" id="addMemberModal">
+<div class="modal" id="addMemberModal">
+    @using (Html.BeginForm("AddMember", "Sandooqs", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="addMemberModalLable">اضافة عضو جديد الى صندوق @Model.Sandooq.name</h5>
                 </div>
                 <div class="modal-body">
-                    @{Html.RenderPartial("AddMemberPartial", new AddMemberViewModel { SandooqId = Model.Sandooq.id });}
+                    @{
+                        Html.RenderPartial("AddMemberPartial", new AddMemberViewModel { SandooqId = Model.Sandooq.id });
+                    }
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">الغاء</button>
@@ -182,21 +184,23 @@
                 </div>
             </div>
         </div>
-    </div>
-}
+    }
+</div>
 
-@using (Html.BeginForm("AddCategory", "Sandooqs", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-{
-    @Html.AntiForgeryToken()
-    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
-    <div class="modal" id="addCategoryModal">
+<div class="modal" id="addCategoryModal">
+    @using (Html.BeginForm("AddCategory", "Sandooqs", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="addCategoryModalLable">اضافة فئة جديدة الى صندوق @Model.Sandooq.name</h5>
                 </div>
                 <div class="modal-body">
-                    @{Html.RenderPartial("AddCategoryPartial", new Category { sandooq = Model.Sandooq });}
+                    @{
+                        Html.RenderPartial("AddCategoryPartial", new Category { sandooq = Model.Sandooq });
+                    }
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">الغاء</button>
@@ -204,21 +208,23 @@
                 </div>
             </div>
         </div>
-    </div>
-}
+    }
+</div>
 
-@using (Html.BeginForm("AddIncome", "Sandooqs", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-{
-    @Html.AntiForgeryToken()
-    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
-    <div class="modal" id="addIncomeModal">
+<div class="modal" id="addIncomeModal">
+    @using (Html.BeginForm("AddIncome", "Sandooqs", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">اضافة دخل جديدة الى صندوق @Model.Sandooq.name</h5>
                 </div>
                 <div class="modal-body">
-                    @{Html.RenderPartial("AddIncomePartial", new AddIncomeViewModel { sandooqID = Model.Sandooq.id, sandooqCategories = Model.Sandooq.categories.ToList(), sandooqMembers = Model.Sandooq.members.ToList() });}
+                    @{
+                        Html.RenderPartial("AddIncomePartial", new AddIncomeViewModel { sandooqID = Model.Sandooq.id, sandooqCategories = Model.Sandooq.categories.ToList(), sandooqMembers = Model.Sandooq.members.ToList() });
+                    }
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">الغاء</button>
@@ -226,20 +232,22 @@
                 </div>
             </div>
         </div>
-    </div>
-}
-@using (Html.BeginForm("AddExpense", "Sandooqs", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-{
-    @Html.AntiForgeryToken()
-    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
-    <div class="modal" id="addExpenseModal">
+    }
+</div>
+<div class="modal" id="addExpenseModal">
+    @using (Html.BeginForm("AddExpense", "Sandooqs", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">اضافة مصروف جديدة الى صندوق @Model.Sandooq.name</h5>
                 </div>
                 <div class="modal-body">
-                    @{Html.RenderPartial("AddExpensePartial", new AddExpenseViewModel { sandooq = Model.Sandooq, sandooqID = Model.Sandooq.id, sandooqCategories = Model.Sandooq.categories.ToList(), sandooqMembers = Model.Sandooq.members.ToList() });}
+                    @{
+                        Html.RenderPartial("AddExpensePartial", new AddExpenseViewModel { sandooq = Model.Sandooq, sandooqID = Model.Sandooq.id, sandooqCategories = Model.Sandooq.categories.ToList(), sandooqMembers = Model.Sandooq.members.ToList() });
+                    }
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">الغاء</button>
@@ -247,13 +255,13 @@
                 </div>
             </div>
         </div>
-    </div>
-}
-@using (Html.BeginForm("DeleteMamber", "Sandooqs", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-{
-    @Html.AntiForgeryToken()
-    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
-    <div class="modal" id="deleteMemberModal">
+    }
+</div>
+<div class="modal" id="deleteMemberModal">
+    @using (Html.BeginForm("DeleteMamber", "Sandooqs", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -268,8 +276,8 @@
                 </div>
             </div>
         </div>
-    </div>
-}
+    }
+</div>
 
 @section Scripts {
     <script>
@@ -299,7 +307,7 @@
                         'Accept': 'application/json',
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ memberId: memberID})
+                    body: JSON.stringify({ memberId: memberID })
                 });
 
             const content = await result.json();

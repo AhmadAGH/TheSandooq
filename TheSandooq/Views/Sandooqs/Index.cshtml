@@ -58,22 +58,24 @@
                 }
             </td>
         </tr>
-            }
+    }
 
 </table>
 
-@using (Html.BeginForm("Create", "Sandooqs", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-{
-    @Html.AntiForgeryToken()
-    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
-    <div class="modal" id="addSandooqModal">
+<div class="modal" id="addSandooqModal">
+    @using (Html.BeginForm("Create", "Sandooqs", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="addSandooqModalModalLable">انشاء صندوق جديد</h5>
                 </div>
                 <div class="modal-body">
-                    @{Html.RenderPartial("AddSandooqPartial", new CreateSandooqViewModel { });}
+                    @{
+                        Html.RenderPartial("AddSandooqPartial", new CreateSandooqViewModel { });
+                    }
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">الغاء</button>
@@ -81,8 +83,8 @@
                 </div>
             </div>
         </div>
-    </div>
-}
+    }
+</div>
 
 @section Scripts {
     <script>

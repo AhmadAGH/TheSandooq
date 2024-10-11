@@ -5,7 +5,6 @@ namespace TheSandooq.Models
     public class Income
     {
         public int id { get; set; }
-        public string type { get; set; }
 
         [Display(Name = "المبلغ")]
         [Required(ErrorMessage = "يجب ادخال المبلغ")]

@@ -15,6 +15,10 @@ namespace TheSandooq.Controllers
 
         public IActionResult Index()
         {
+            if(User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("index", "Sandooqs");
+            }
             return View();
         }
 

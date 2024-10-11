@@ -103,8 +103,14 @@ namespace TheSandooq.Areas.Identity.Pages.Account
             }
 
             var result = await _userManager.ResetPasswordAsync(user, Input.Code, Input.Password);
+
             if (result.Succeeded)
             {
+                if(!user.EmailConfirmed)
+                {
+                    user.EmailConfirmed = true;
+                    await _userManager.UpdateAsync(user);
+                }
                 return RedirectToPage("./ResetPasswordConfirmation");
             }
 
