@@ -1,0 +1,47 @@
+﻿@model TheSandooq.Models.AddMemberViewModel
+
+
+
+    
+<div class="form-horizontal">
+    <hr />
+    <table>
+        <tr>
+            <td width="40%">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.MemberFullName, htmlAttributes: new { @class = "control-label col-md-5" })
+                    <div class="col-lg-10">
+                        @Html.EditorFor(m => m.MemberFullName, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(m => m.MemberFullName, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(m=>m.SandooqId)
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td width="40%">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.MemberEmail, htmlAttributes: new { @class = "control-label col-md-5" })
+
+                    <div class="col-lg-10">
+                        @Html.EditorFor(m => m.MemberEmail, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(m => m.MemberEmail, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+        </tr>
+        <tr>
+            <td>
+                &thinsp;
+            </td>
+        </tr>
+    </table>
+   
+    
+
+    
+</div>
+
+

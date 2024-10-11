@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Sandooqna.Models
+namespace TheSandooq.Models
 {
     public class ExternalLoginConfirmationViewModel
     {

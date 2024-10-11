@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Configuration;
 
-namespace Sandooqna.Models
+namespace TheSandooq.Models
 {
     public class AddMemberViewModel
     {

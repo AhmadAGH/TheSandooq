@@ -177,7 +177,7 @@ namespace TheSandooq.Migrations
                     b.ToTable("SandooqMembers", (string)null);
                 });
 
-            modelBuilder.Entity("Sandooqna.Models.ApplicationUser", b =>
+            modelBuilder.Entity("TheSandooq.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -246,7 +246,7 @@ namespace TheSandooq.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("Sandooqna.Models.Category", b =>
+            modelBuilder.Entity("TheSandooq.Models.Category", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -277,7 +277,7 @@ namespace TheSandooq.Migrations
                     b.ToTable("dbCategories");
                 });
 
-            modelBuilder.Entity("Sandooqna.Models.Expense", b =>
+            modelBuilder.Entity("TheSandooq.Models.Expense", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -312,7 +312,7 @@ namespace TheSandooq.Migrations
                     b.ToTable("dbExpenses");
                 });
 
-            modelBuilder.Entity("Sandooqna.Models.Income", b =>
+            modelBuilder.Entity("TheSandooq.Models.Income", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -348,7 +348,7 @@ namespace TheSandooq.Migrations
                     b.ToTable("dbIncomes");
                 });
 
-            modelBuilder.Entity("Sandooqna.Models.Sandooq", b =>
+            modelBuilder.Entity("TheSandooq.Models.Sandooq", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -388,7 +388,7 @@ namespace TheSandooq.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Sandooqna.Models.ApplicationUser", null)
+                    b.HasOne("TheSandooq.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -397,7 +397,7 @@ namespace TheSandooq.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Sandooqna.Models.ApplicationUser", null)
+                    b.HasOne("TheSandooq.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -412,7 +412,7 @@ namespace TheSandooq.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Sandooqna.Models.ApplicationUser", null)
+                    b.HasOne("TheSandooq.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -421,7 +421,7 @@ namespace TheSandooq.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Sandooqna.Models.ApplicationUser", null)
+                    b.HasOne("TheSandooq.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -430,22 +430,22 @@ namespace TheSandooq.Migrations
 
             modelBuilder.Entity("SandooqMembers", b =>
                 {
-                    b.HasOne("Sandooqna.Models.Sandooq", null)
+                    b.HasOne("TheSandooq.Models.Sandooq", null)
                         .WithMany()
                         .HasForeignKey("Sandooqid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Sandooqna.Models.ApplicationUser", null)
+                    b.HasOne("TheSandooq.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("memberId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Sandooqna.Models.Category", b =>
+            modelBuilder.Entity("TheSandooq.Models.Category", b =>
                 {
-                    b.HasOne("Sandooqna.Models.Sandooq", "sandooq")
+                    b.HasOne("TheSandooq.Models.Sandooq", "sandooq")
                         .WithMany("categories")
                         .HasForeignKey("SandooqId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -454,21 +454,21 @@ namespace TheSandooq.Migrations
                     b.Navigation("sandooq");
                 });
 
-            modelBuilder.Entity("Sandooqna.Models.Expense", b =>
+            modelBuilder.Entity("TheSandooq.Models.Expense", b =>
                 {
-                    b.HasOne("Sandooqna.Models.Category", "category")
+                    b.HasOne("TheSandooq.Models.Category", "category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Sandooqna.Models.Sandooq", "sandooq")
+                    b.HasOne("TheSandooq.Models.Sandooq", "sandooq")
                         .WithMany("expenses")
                         .HasForeignKey("SandooqId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Sandooqna.Models.ApplicationUser", "member")
+                    b.HasOne("TheSandooq.Models.ApplicationUser", "member")
                         .WithMany("Expenses")
                         .HasForeignKey("memberId");
 
@@ -479,21 +479,21 @@ namespace TheSandooq.Migrations
                     b.Navigation("sandooq");
                 });
 
-            modelBuilder.Entity("Sandooqna.Models.Income", b =>
+            modelBuilder.Entity("TheSandooq.Models.Income", b =>
                 {
-                    b.HasOne("Sandooqna.Models.Category", "category")
+                    b.HasOne("TheSandooq.Models.Category", "category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Sandooqna.Models.Sandooq", "sandooq")
+                    b.HasOne("TheSandooq.Models.Sandooq", "sandooq")
                         .WithMany("incomes")
                         .HasForeignKey("SandooqId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Sandooqna.Models.ApplicationUser", "member")
+                    b.HasOne("TheSandooq.Models.ApplicationUser", "member")
                         .WithMany("Incomes")
                         .HasForeignKey("memberId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -506,9 +506,9 @@ namespace TheSandooq.Migrations
                     b.Navigation("sandooq");
                 });
 
-            modelBuilder.Entity("Sandooqna.Models.Sandooq", b =>
+            modelBuilder.Entity("TheSandooq.Models.Sandooq", b =>
                 {
-                    b.HasOne("Sandooqna.Models.ApplicationUser", "creator")
+                    b.HasOne("TheSandooq.Models.ApplicationUser", "creator")
                         .WithMany("CreatedSandooqs")
                         .HasForeignKey("creatorID")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -517,7 +517,7 @@ namespace TheSandooq.Migrations
                     b.Navigation("creator");
                 });
 
-            modelBuilder.Entity("Sandooqna.Models.ApplicationUser", b =>
+            modelBuilder.Entity("TheSandooq.Models.ApplicationUser", b =>
                 {
                     b.Navigation("CreatedSandooqs");
 
@@ -526,7 +526,7 @@ namespace TheSandooq.Migrations
                     b.Navigation("Incomes");
                 });
 
-            modelBuilder.Entity("Sandooqna.Models.Sandooq", b =>
+            modelBuilder.Entity("TheSandooq.Models.Sandooq", b =>
                 {
                     b.Navigation("categories");
 

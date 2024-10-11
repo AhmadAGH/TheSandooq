@@ -1,0 +1,66 @@
+﻿@model TheSandooq.Models.AddIncomeViewModel
+@using TheSandooq.Models
+<div class="form-horizontal">
+
+    @Html.HiddenFor(model => model.sandooqID)
+    <div class="form-group">
+        @Html.LabelFor(model => model.categoryID, htmlAttributes: new { @class = "control-label col-md-5" })
+        <div class="">
+            <div class="checkbox">
+                <select onchange="selectCatIn()" name="categoryID" class="form-control form-select">
+                    <option selected disabled value="-1">---</option>
+                    @foreach (Category cat in Model.sandooqCategories.Where(c => c.isIncome))
+                    {
+                        <option id="@cat.id" name="@cat.isRequireMember" value="@cat.id">@cat.name</option>
+                        <option hidden disabled id="-@cat.id" value="@cat.isRequireMember.ToString()"></option>
+                    }
+                </select>
+                @Html.ValidationMessageFor(model => model.categoryID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.memberID, htmlAttributes: new { @class = "control-label col-md-5", id = "memberLableIn" })
+        <div class="">
+            <div class="checkbox">
+                <select disabled id="memberIDIn" name="memberID" class="form-control form-select">
+                    <option  selected value="">----</option>
+                    @foreach (ApplicationUser member in Model.sandooqMembers)
+                    {
+                        <option value="@member.Id">@member.FullName</option>
+                    }
+                </select>
+                @Html.ValidationMessageFor(model => model.memberID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.amount, htmlAttributes: new { @class = "control-label col-md-5" })
+        <div class="">
+            <div class="checkbox">
+                @Html.TextBoxFor(model => model.amount, new { Type = "number", @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.amount, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var isRequireMemberIn;
+    function selectCatIn() {
+        var selectedCategory = $('select[name="categoryID"] :selected')[0].attributes[0].value;
+        var selectedcategoryIsRequesreMember = $("#-" + selectedCategory).val();
+        console.log(selectedCategory);
+        console.log(selectedcategoryIsRequesreMember);
+        isRequireMemberIn = selectedcategoryIsRequesreMember;
+        if (isRequireMemberIn != 'True') {
+            $("#memberIDIn").prop('disabled', true);
+            $("#alert").hide(1000);
+            document.getElementById("memberIDIn").value = -1;
+        } else {
+            $("#memberIDIn").prop('disabled', false);
+
+        }
+    }
+</script>
+@section Scripts {
+}

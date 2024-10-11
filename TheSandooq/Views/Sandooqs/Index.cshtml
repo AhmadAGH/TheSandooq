@@ -1,0 +1,95 @@
+﻿@model IEnumerable<Sandooq>
+@using TheSandooq.Models
+
+@{
+    ViewBag.Title = "صناديقي";
+}
+
+@if (ViewBag.message != null)
+{
+    <hr />
+    <div class="text-center alert @((ViewBag.isSuccess == true? "alert-success":"alert-danger"))">
+        @ViewBag.message
+    </div>
+    <hr />
+}
+
+<p>
+
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.name)
+        </th>
+        <th>
+            عدد الاعضاء
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.creator)
+        </th>
+        <th>
+            <button id="btnWhoAddSandooqModal" class="btn btn-primary">انشاء صندوق <span class="fa fa-plus"></span></button>
+        </th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.members.Count)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.creator.FullName)
+            </td>
+            <td>
+
+                @if (User.Identity.Name == item.creator.UserName)
+                {
+                    @Html.ActionLink("دخول", "Details", new { id = item.id })
+                    <span>|</span>
+                    @Html.ActionLink("حذف", "Delete", new { id = item.id })
+                }
+                else
+                {
+                    @Html.ActionLink("دخول", "MemberLounge", new { id = item.id })
+                }
+            </td>
+        </tr>
+            }
+
+</table>
+
+@using (Html.BeginForm("Create", "Sandooqs", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+    <div class="modal" id="addSandooqModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addSandooqModalModalLable">انشاء صندوق جديد</h5>
+                </div>
+                <div class="modal-body">
+                    @{Html.RenderPartial("AddSandooqPartial", new CreateSandooqViewModel { });}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">الغاء</button>
+                    <input type="submit" value="حفظ" class="btn btn-outline-primary" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        $("#btnWhoAddSandooqModal").click(function () {
+            $('#addSandooqModal').modal('show');
+
+        });
+
+    </script>
+}

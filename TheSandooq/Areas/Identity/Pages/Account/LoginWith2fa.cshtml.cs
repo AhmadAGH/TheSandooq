@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-using Sandooqna.Models;
+using TheSandooq.Models;
 
 namespace TheSandooq.Areas.Identity.Pages.Account
 {

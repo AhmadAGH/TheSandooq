@@ -1,0 +1,321 @@
+﻿@model TheSandooq.Models.DetailsSandooqViewModel
+@using TheSandooq.Models
+@using TheSandooq.Controllers
+@{
+    ViewBag.Title = "";
+}
+@if (ViewBag.message != null)
+{
+    <hr />
+    <div class="text-center alert @((ViewBag.isSuccess == true? "alert-success":"alert-danger"))">
+        @ViewBag.message
+    </div>
+    <hr />
+}
+
+<div class="container">
+
+    <br />
+
+    <h4>
+        <a href="@Url.Action("Index","Sandooqs")" class="btn btn-sm btn-dark">
+            <span class="fa fa-arrow-right"></span>
+        </a>
+        @Model.Sandooq.name
+    </h4>
+    <span class="badge bg-primary">
+        اجمالي المدخولات
+        @Model.TotalIncomes ريال
+        
+        
+            <button id="btnShowAddIncomeModal" class="btn btn-dark btn-sm">
+                <span class="fa fa-plus"></span>
+            </button>
+        
+
+    </span>
+    <span class="badge bg-secondary">
+        اجمالي المصاريف @Model.TotalExpenses ريال
+        
+        
+            <button id="btnShowAddExpenseModal" class="btn btn-dark btn-sm">
+                <span class="fa fa-plus"></span>
+            </button>
+        
+    </span>
+    <span class="badge bg-info">
+        الرصيد المتاح @Model.AvailableBalance ريال
+      
+            <button disabled class="btn btn-info btn-sm">
+                <span class="fa "></span>
+            </button>
+        
+    </span>
+    <span class="badge bg-info">
+        نسبة السداد: @Model.RepaymentRate %
+     
+            <button disabled class="btn btn-info btn-sm">
+                <span class="fa "></span>
+            </button>
+        
+    </span>
+    <hr />
+    <span class="card-title">الاعضاء:</span>
+    <br />
+    <div class="d-flex flex-row flex-nowrap overflow-auto">
+
+        @foreach (var member in Model.SandooqMembersDetails)
+        {
+            <div class="card card-block m-3" style="min-width: 300px;">
+                <div class="card-header">- 
+                    <div class="row">
+                        @if (member.IsVerified)
+                        {
+                            <span class="badge bg-primary small">تم التحقق منه</span>
+                        }
+                        else
+                        {
+                            <span class="col col-md-4 mx-2 badge bg-warning small">لم يتم التحقق</span>
+                            <button id="btn_resend_password_email" onclick="resendPasswordEmail('@member.Id')" class="col col-md-6 btn btn-primary btn-sm">اعادة ارسال ايميل التحقق</button>
+                        }
+                    </div>
+                    <div class="row">
+                        <div class="col col-md-9">
+                            <a class="btn btn-link" href="/sandooqs/memberDetails?memberID=@member.Id&sandooqID=@Model.Sandooq.id">
+                                @member.Name
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="card-body">
+                    دفَع: @member.TotalIncomes ريال
+                    <br />
+                    سحَب: @member.TotalExpenses ريال
+                    <br />
+                    رصيده: @member.AvailableBalance ريال
+                    <br />
+                    نسبة السداد: @member.RepaymentRate %
+                </div>
+                <div class="card-footer">
+                    @foreach (var category in member.CategoryAmounts)
+                    {
+                        
+                        if (category.Amount > 0)
+                        {
+                            <span class="badge @(category.IsIncome? "bg-primary" : "bg-secondary")">
+                                @category.CategoryName : @category.Amount ريال
+                            </span>
+                        }
+                    }
+                </div>
+            </div>
+
+        }
+    </div>
+    <hr />
+   
+        <button class="btn btn-outline-dark" id="btnShowAddMemberModal">اضافة عضو</button>
+    
+    <hr />
+    <span class="card-title">الفئات:</span>
+    <br />
+    <div class="d-flex flex-row flex-nowrap overflow-auto">
+        @foreach (var category in Model.CategoryAmounts)
+        {
+            <div class="card card-block m-3" style="min-width:300px;">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col col-md-5">
+                            @category.CategoryName
+                        </div>
+                        <div class="col col-md-5">
+                            @category.Amount ريال
+                        </div>
+                        <div class="col col-md-1">
+                            @if (!category.IsMainCategory)
+                            {
+                                <button class="btn close btn-outline-danger btn-sm">
+                                    <span class="fa fa-trash"></span>
+                                </button>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    @*@foreach (ApplicationUser member in Model.Sandooq.members)
+                    {
+                        double memberCategoryAmount = SandooqsController.GetTotalAmountByCategory(Model.Sandooq.id, category.id, member.Id).Result;
+
+                        if (memberCategoryAmount > 0)
+                        {
+                            <span class="badge  @(category.isIncome? "bg-primary" : "bg-secondary")">@member.FullName - @memberCategoryAmount ريال</span>
+                        }
+                    }*@
+                </div>
+            </div>
+        }
+    </div>
+    <hr />
+  
+        <button class="btn btn-outline-dark" id="btnShowAddCategoryModal">اضافة فئة</button>
+    
+    <hr />
+</div>
+
+@using (Html.BeginForm("AddMember", "Sandooqs", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+    <div class="modal" id="addMemberModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addMemberModalLable">اضافة عضو جديد الى صندوق @Model.Sandooq.name</h5>
+                </div>
+                <div class="modal-body">
+                    @{Html.RenderPartial("AddMemberPartial", new AddMemberViewModel { SandooqId = Model.Sandooq.id });}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">الغاء</button>
+                    <input type="submit" value="حفظ" class="btn btn-outline-primary" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@using (Html.BeginForm("AddCategory", "Sandooqs", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+    <div class="modal" id="addCategoryModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addCategoryModalLable">اضافة فئة جديدة الى صندوق @Model.Sandooq.name</h5>
+                </div>
+                <div class="modal-body">
+                    @{Html.RenderPartial("AddCategoryPartial", new Category { sandooq = Model.Sandooq });}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">الغاء</button>
+                    <input type="submit" value="حفظ" class="btn btn-outline-primary" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@using (Html.BeginForm("AddIncome", "Sandooqs", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+    <div class="modal" id="addIncomeModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">اضافة دخل جديدة الى صندوق @Model.Sandooq.name</h5>
+                </div>
+                <div class="modal-body">
+                    @{Html.RenderPartial("AddIncomePartial", new AddIncomeViewModel { sandooqID = Model.Sandooq.id, sandooqCategories = Model.Sandooq.categories.ToList(), sandooqMembers = Model.Sandooq.members.ToList() });}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">الغاء</button>
+                    <input type="submit" value="حفظ" class="btn btn-outline-primary" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@using (Html.BeginForm("AddExpense", "Sandooqs", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+    <div class="modal" id="addExpenseModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">اضافة مصروف جديدة الى صندوق @Model.Sandooq.name</h5>
+                </div>
+                <div class="modal-body">
+                    @{Html.RenderPartial("AddExpensePartial", new AddExpenseViewModel { sandooq = Model.Sandooq, sandooqID = Model.Sandooq.id, sandooqCategories = Model.Sandooq.categories.ToList(), sandooqMembers = Model.Sandooq.members.ToList() });}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">الغاء</button>
+                    <input id="btnSaveExpense" type="submit" value="حفظ" class="btn btn-outline-primary" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@using (Html.BeginForm("DeleteMamber", "Sandooqs", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+    <div class="modal" id="deleteMemberModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="DeleteMemberModaltitle"></h5>
+                </div>
+                <div class="modal-body">
+                    <input hidden name="memberID" id="deleteMemberID" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">الغاء</button>
+                    <input type="submit" value="حفظ" class="btn btn-outline-primary" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        $("#btnShowAddMemberModal").click(function () {
+            $('#addMemberModal').modal('show');
+
+        });
+        $("#btnShowAddCategoryModal").click(function () {
+            $('#addCategoryModal').modal('show');
+
+        });
+        $("#btnShowAddIncomeModal").click(function () {
+            $('#addIncomeModal').modal('show');
+
+        });
+        $("#btnShowAddExpenseModal").click(function () {
+            $('#addExpenseModal').modal('show');
+
+        });
+
+        async function resendPasswordEmail(memberID) {
+            console.log(memberID)
+            var result = await fetch('@Url.Action("ResendPasswordLinkToMember")',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ memberId: memberID})
+                });
+
+            const content = await result.json();
+            console.log(content);
+
+
+        }
+        function showDeleteMemberModal(name, id) {
+            $('#deleteMemberModal').modal('show');
+            console.log(name);
+            console.log(id);
+            document.getElementById("DeleteMemberModaltitle").innerHTML = "هل انت واثق من رغبتك بحذف " + name + " ؟";
+            document.getElementById("deleteMemberID").value = id;
+        }
+
+    </script>
+}
+
+

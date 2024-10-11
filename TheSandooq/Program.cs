@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
-using Sandooqna.Models;
+using TheSandooq.Models;
 using TheSandooq.Data;
 using TheSandooq.Services;
 

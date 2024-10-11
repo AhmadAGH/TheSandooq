@@ -1,10 +1,10 @@
-﻿using Sandooqna.Models;
+﻿using TheSandooq.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace Sandooqna.Models
+namespace TheSandooq.Models
 {
     public class MemberSandooqDetailsViewModel
     {

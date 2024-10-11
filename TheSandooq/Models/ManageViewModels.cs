@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Owin.Security;
 
 
-namespace Sandooqna.Models
+namespace TheSandooq.Models
 {
     public class IndexViewModel
     {

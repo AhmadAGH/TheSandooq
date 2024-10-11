@@ -1,0 +1,54 @@
+﻿
+@model TheSandooq.Models.Sandooq
+@using TheSandooq.Models
+@{
+    ViewBag.Title = "";
+    string currentUserId = ViewBag.CurrentUserId != null ? (string)ViewBag.CurrentUserId : null;
+}
+@if (ViewBag.message != null)
+{
+    <hr />
+    <div class="text-center alert @((ViewBag.isSuccess == true? "alert-success":"alert-danger"))">
+        @ViewBag.message
+    </div>
+    <hr />
+}
+
+<div class="container">
+
+    <br />
+
+    <h4>
+        <a href="@Url.Action("Index","Sandooqs")" class="btn btn-sm btn-dark">
+            <span class="fa fa-arrow-right"></span>
+        </a>
+    </h4>
+    <span class="badge bg-primary">
+    اجمالي مدخولات الصندوق
+    @Model.GetTotalIncomes() ريال
+
+
+</span>
+<span class="badge bg-secondary">
+    اجمالي مصاريف الصندوق @Model.GetTotalExpenses()
+    ريال
+
+</span>
+<span class="badge bg-info">
+    الرصيد المتاح لك @Model.GetAvailableBalance(currentUserId) ريال
+
+</span>
+<span class="badge bg-info">
+    نسبة السداد للصندوق: @Model.GetRepaymentRate() %
+
+</span>
+    </div>
+    
+
+<script>
+
+
+
+</script>
+
+

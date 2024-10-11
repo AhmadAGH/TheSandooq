@@ -1,0 +1,49 @@
+﻿@model TheSandooq.Models.Sandooq
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>حذف صندوق</h2>
+
+<h3>هل تريد حذف هذا الصندوق ؟</h3>
+<div>
+    <hr />
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.name)
+            </th>
+            <th>
+                عدد الاعضاء
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.creator)
+            </th>
+        </tr>
+
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.members.Count)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.creator.UserName)
+                </td>
+
+            </tr>
+        
+
+    </table>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="حذف" class="btn btn-default" /> |
+            @Html.ActionLink("تراجع", "Index")
+        </div>
+    }
+</div>

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Sandooqna.Models;
+using TheSandooq.Models;
 
 namespace TheSandooq.Data
 {
@@ -10,6 +10,10 @@ namespace TheSandooq.Data
             : base(options)
         {
 
+        }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseLazyLoadingProxies(); // Ensure this is called
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -52,6 +56,7 @@ namespace TheSandooq.Data
 
             base.OnModelCreating(modelBuilder);
             }
+
         public DbSet<Sandooq> dbSandooqs { get; set; }
         public DbSet<Income> dbIncomes { get; set; }
         public DbSet<Expense> dbExpenses { get; set; }

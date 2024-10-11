@@ -1,0 +1,106 @@
+﻿@model TheSandooq.Models.AddExpenseViewModel
+@using TheSandooq.Models
+
+<div style="display:none;"  id="alert" class="alert alert-danger">
+    <div id="alertMsg">
+
+    </div>
+    <div>
+
+    </div>
+</div>
+<div class="form-horizontal">
+
+    @Html.HiddenFor(model => model.sandooqID)
+    <div class="form-group">
+        @Html.LabelFor(model => model.categoryID, htmlAttributes: new { @class = "control-label col-md-5" })
+        <div class="">
+            <div class="checkbox">
+                <select onchange="selectCat()" name="categoryID" class="form-control form-select">
+                    <option selected disabled value="-1">---</option>
+                    @foreach(Category cat in Model.sandooqCategories.Where(c => !c.isIncome)) 
+                    {
+                        <option id="@cat.id" name="@cat.isRequireMember" value="@cat.id">@cat.name</option>
+                        <option hidden disabled id="-@cat.id" value="@cat.isRequireMember.ToString()"></option>
+                    }
+                </select>
+                @Html.ValidationMessageFor(model => model.categoryID, "", new { @class = "text-danger "})
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.memberID, htmlAttributes: new { @class = "control-label col-md-5" ,id = "memberLable" })
+        <div class="">
+            <div class="checkbox">
+                <select disabled onchange="checkAmount()" name="memberID" id="memberID" class="form-control form-select">
+                    <option selected class="- - -" value="-1">---</option>
+                    @{
+                        double sandooqBalance = Model.sandooq.GetBalance();
+                    }
+                    @foreach (ApplicationUser member in Model.sandooqMembers)
+                    {
+                        double memberBalance = Model.sandooq.GetBalance(member.Id);
+                        double availableBalance = Model.sandooq.GetAvailableBalance(member.Id);
+                        <option class="@memberBalance  @availableBalance+1  @sandooqBalance+2" value="@member.Id">
+                            @member.FullName | @memberBalance
+                        </option>
+                    }
+                </select>
+                @Html.ValidationMessageFor(model => model.memberID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.amount, htmlAttributes: new { @class = "control-label col-md-5" })
+        <div class="">
+            <div class="checkbox">
+                @Html.TextBoxFor(model => model.amount, new { id = "amountInput", Type = "number", @class = "form-control"})
+                @Html.ValidationMessageFor(model => model.amount, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var isRequireMember;
+    function selectCat() {
+        var selectedCategory = $('select[name="categoryID"] :selected')[1].attributes[0].value;
+        var selectedcategoryIsRequesreMember = $("#-" + selectedCategory).val() ;
+        isRequireMember = selectedcategoryIsRequesreMember;
+        if (isRequireMember != 'True') {
+            $("#memberID").prop('disabled', true);
+            $("#alert").hide(1000);
+            document.getElementById("memberID").value = -1;
+        } else {
+            $("#memberID").prop('disabled', false);
+
+        }
+    }
+    function checkAmount() {
+        console.log(isRequireMember);
+        if (isRequireMember == 'True') {
+            var memberBalance = parseFloat($('select[name="memberID"] :selected')[1].classList[0]) ;
+            var availbaleBalance = parseFloat($('select[name="memberID"] :selected')[1].classList[1].substring(0, $('select[name="memberID"] :selected')[1].classList[1].indexOf("+"))) ;
+            $("#amountInput").on("input", function () {
+                
+                if (isRequireMember == 'True') {
+                    var expenseAmount = parseFloat($("#amountInput").val()) ;
+                    
+                    if (availbaleBalance < expenseAmount) {
+                        $("#btnSaveExpense").prop('disabled', true);
+                        $("#alert").show(1000)
+                        $("#alertMsg").replaceWith("<div id='alertMsg'>الرصيد المتاح في الصندوق لا يسمح</div>");
+                    } else if (memberBalance < expenseAmount) {
+                        $("#btnSaveExpense").prop('disabled', false);
+                        $("#alert").show(1000)
+                        $("#alertMsg").replaceWith("<div id='alertMsg'>تحذير !! المبلغ المُدخل اعلا من رصيد العضو</div>");
+                    } else {
+                        $("#btnSaveExpense").prop('disabled', false);
+                        $("#alert").hide(1000);
+                    }
+                }
+            })
+        } 
+    }
+</script>
+@section Scripts {
+}

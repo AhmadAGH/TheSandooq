@@ -1,0 +1,82 @@
+﻿@using TheSandooq.Models
+@model MemberSandooqDetailsViewModel
+<div class="container">
+    <br />
+    <h4>
+        <a href="@Url.Action("Details","Sandooqs",new { id = Model.sandooqID})" class="btn btn-sm btn-dark">
+            <span class="fa fa-arrow-right"></span>
+        </a>
+
+        @Model.sandooqName<span class=" fa fa-arrow-left"></span> @Model.memberFullName
+    </h4>
+    <span class="card-subtitle">المصروفات</span>
+    <div class="row">
+        @if (Model.memberExpenses.Count > 0)
+        {
+            foreach (Expense e in Model.memberExpenses.OrderByDescending(e => e.id))
+            {
+                <div class="card  m-3" style="min-width: 250px; max-width:300px">
+                    <div class="card-header row text-light bg-secondary">
+
+                        <div class="col col-10">
+                            @e.id -  @e.category.name
+                        </div>
+                        <div class="col col-2">
+                            <form action="DeleteExpense">
+
+                            </form>
+                            <button class="btn btn-danger">
+                                <span class="fa fa-trash"></span>
+                            </button>
+                        </div>
+                        @*
+           <div class="col col-2">
+            <button class="btn btn-warning">
+                <span class="fa fa-edit"></span>
+            </button>
+        </div>
+                        *@
+                    </div>
+                    <div class="card-body">
+                        المبلغ: @e.amount ريال
+                    </div>
+                </div>
+            }
+        }
+    </div>
+    <span class="card-subtitle">المدخولات</span>
+    <div class="row">
+        @if (Model.memberIncomes.Count > 0)
+        {
+            foreach (Income i in Model.memberIncomes.Where(i => i.member.Id.Equals(Model.memberID)).OrderByDescending(i => i.id))
+            {
+                <div class="card  m-3" style="min-width: 250px; max-width:300px">
+                    <div class="card-header row text-light bg-primary">
+
+                        <div class="col col-10">
+                            @i.id -  @i.category.name
+                        </div>
+                        <div class="col col-2">
+                            <button class="btn btn-danger">
+                                <span class="fa fa-trash"></span>
+                            </button>
+                        </div>
+                        @*
+
+        <div class="col col-2">
+            <button class="btn btn-warning">
+                <span class="fa fa-edit"></span>
+            </button>
+        </div>*@
+                    </div>
+                    <div class="card-body">
+                        المبلغ: @i.amount ريال
+                    </div>
+                </div>
+            }
+        }
+    </div>
+
+
+</div>
+
