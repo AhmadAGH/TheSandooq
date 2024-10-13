@@ -5,7 +5,6 @@ namespace TheSandooq.Models
     public class Expense :ITransaction
     {
         public int id { get; set; }
-        public string type { get; set; }
         public double amount { get; set; }
         [NotMapped]
         public double CalculatedAmount { get => amount * -1; set => amount = value; }

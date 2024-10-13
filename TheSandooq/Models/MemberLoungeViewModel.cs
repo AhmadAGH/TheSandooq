@@ -8,6 +8,7 @@
         public double MemberTotalExpenses { get; set; }
         public double MemberRepaymentRate { get; set; }
         public double MemberAvailableBalance { get; set; }
+        public int SandooqId { get; set; }
         public List<ITransaction> MemberTransactions { get; set; } = new List<ITransaction>();
     }
 }

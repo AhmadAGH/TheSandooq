@@ -98,9 +98,9 @@ namespace TheSandooq.Models
 
             var sandooq = this;
             double availableBalance = 
-                sandooq.incomes.Where(i=> string.IsNullOrEmpty(userID) || i.member.Id == userID).Sum(i => i.amount) 
+                sandooq.incomes.Sum(i => i.amount) 
                 - 
-                sandooq.expenses.Where(i => string.IsNullOrEmpty(userID) || i.member.Id == userID).Sum(e => e.amount);
+                sandooq.expenses.Sum(e => e.amount);
             if (string.IsNullOrEmpty(userID))
             {
                 foreach (Income i in sandooq.incomes)
@@ -113,16 +113,27 @@ namespace TheSandooq.Models
                 return availableBalance;
             }
 
-            //foreach (Income i in sandooq.incomes)
-            //{
-            //    if (i.Category.mainCategoryType.HasValue && i.Category.mainCategoryType == MainCategories.DPI && !i.member.Id.Equals(userID))
-            //    {
-            //        availableBalance -= i.amount;
-            //    }
-            //}
+            foreach (Income i in sandooq.incomes)
+            {
+                if (i.Category.mainCategoryType.HasValue && i.Category.mainCategoryType == MainCategories.DPI && !i.member.Id.Equals(userID))
+                {
+                    availableBalance -= i.amount;
+                }
+            }
             return availableBalance;
 
 
+        }
+
+        public double GetMemberBalance(string memberId)
+        {
+            var sandooq = this;
+            double availableBalance =
+                sandooq.incomes.Where(i => i.member.Id == memberId).Sum(i => i.amount)
+                -
+                sandooq.expenses.Where(i => i.member.Id == memberId).Sum(e => e.amount);
+
+            return availableBalance;
         }
         public double GetTotalAmountByCategory(int categoryID, string userID = "")
         {

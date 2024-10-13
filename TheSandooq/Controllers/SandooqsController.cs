@@ -73,7 +73,7 @@ namespace TheSandooq.Controllers
             var membersDetails = sandooq.members.Select(m => new SandooqMemberDetails
             {
                 Id = m.Id,
-                AvailableBalance = sandooq.GetAvailableBalance(m.Id),
+                AvailableBalance = sandooq.GetBalance(m.Id),
                 RepaymentRate = sandooq.GetRepaymentRate(m.Id),
                 TotalExpenses = sandooq.GetTotalExpenses(m.Id),
                 TotalIncomes = sandooq.GetTotalIncomes(m.Id),
@@ -94,6 +94,7 @@ namespace TheSandooq.Controllers
             {
                 Sandooq = sandooq,
                 AvailableBalance = sandooq.GetAvailableBalance(),
+                TotalBalance = sandooq.GetBalance(),
                 RepaymentRate = sandooq.GetRepaymentRate(),
                 TotalExpenses = sandooq.GetTotalExpenses(),
                 TotalIncomes = sandooq.GetTotalIncomes(),
@@ -398,6 +399,7 @@ namespace TheSandooq.Controllers
         {
             ModelState.Remove("sandooqMembers");
             ModelState.Remove("sandooqCategories");
+            ModelState.Remove("Sandooq");
             if (ModelState.IsValid)
             {
 
@@ -457,27 +459,8 @@ namespace TheSandooq.Controllers
         }
         public async Task<ActionResult> MemberDetails(string memberID, int sandooqID)
         {
-            ApplicationUser member = await _dbContext.Users.AsNoTracking().FirstAsync(m => m.Id.Equals(memberID));
-            var sandooq = await _dbContext.dbSandooqs.AsNoTracking().FirstOrDefaultAsync(s => s.id == sandooqID);
-            List<Expense> expenses = _dbContext.dbExpenses.AsNoTracking().Where(e => e.sandooq.id == sandooqID && e.member.Id.Equals(memberID)).ToList();
-            List<Income> incomes = _dbContext.dbIncomes.AsNoTracking().Where(i => i.sandooq.id == sandooqID && i.member.Id.Equals(memberID)).ToList();
-            return View(new MemberSandooqDetailsViewModel
-            {
-                memberID = member.Id,
-                sandooqID = sandooq.id,
-                memberFullName = member.FullName,
-                memberExpenses = expenses,
-                memberIncomes = incomes,
-                sandooqName = sandooq.name
-            });
-        }
-
-        public ActionResult MemberLounge(int id)
-        {
-
-
             ViewBag.CurrentUserId = _currentUserId;
-            var sandooq = _dbContext.dbSandooqs.FirstOrDefault(s => s.id == id && s.members.Any(m => m.Id == _currentUserId));
+            var sandooq = _dbContext.dbSandooqs.FirstOrDefault(s => s.id == sandooqID && s.creatorID == _currentUserId);
             if (sandooq == null)
             {
                 return RedirectToAction("Index", "Sandooqs", new { message = "غير مصرح لك الدخول الى هذا الصندوق", isSuccess = false });
@@ -485,7 +468,33 @@ namespace TheSandooq.Controllers
 
             MemberLoungeViewModel model = new MemberLoungeViewModel
             {
-                MemberAvailableBalance = sandooq.GetAvailableBalance(_currentUserId),
+                MemberAvailableBalance = sandooq.GetMemberBalance(memberID),
+                MemberRepaymentRate = sandooq.GetRepaymentRate(memberID),
+                MemberTotalExpenses = sandooq.GetTotalExpenses(memberID),
+                MemberTotalIncomes = sandooq.GetTotalIncomes(memberID),
+                SandooqName = sandooq.name,
+                MemberName = sandooq.members.FirstOrDefault(m => m.Id == memberID)?.FullName
+            };
+            model.MemberTransactions.AddRange(sandooq.expenses.Where(e => e.member.Id == memberID));
+            model.MemberTransactions.AddRange(sandooq.incomes.Where(i => i.member.Id == memberID));
+            model.SandooqId = sandooq.id;
+            return View(model);
+        }
+
+        public ActionResult MemberLounge(int id)
+        {
+
+
+            ViewBag.CurrentUserId = _currentUserId;
+            var sandooq = _dbContext.dbSandooqs.FirstOrDefault(s => s.id == id && (s.members.Any(m => m.Id == _currentUserId)));
+            if (sandooq == null)
+            {
+                return RedirectToAction("Index", "Sandooqs", new { message = "غير مصرح لك الدخول الى هذا الصندوق", isSuccess = false });
+            }
+
+            MemberLoungeViewModel model = new MemberLoungeViewModel
+            {
+                MemberAvailableBalance = sandooq.GetMemberBalance(_currentUserId),
                 MemberRepaymentRate = sandooq.GetRepaymentRate(_currentUserId),
                 MemberTotalExpenses = sandooq.GetTotalExpenses(_currentUserId),
                 MemberTotalIncomes = sandooq.GetTotalIncomes(_currentUserId),
@@ -494,7 +503,7 @@ namespace TheSandooq.Controllers
             };
             model.MemberTransactions.AddRange(sandooq.expenses.Where(e => e.member.Id == _currentUserId));
             model.MemberTransactions.AddRange(sandooq.incomes.Where(i => i.member.Id == _currentUserId));
-
+            model.SandooqId = sandooq.id;
             return View(model);
 
         }

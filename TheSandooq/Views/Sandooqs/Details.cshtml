@@ -23,42 +23,35 @@
         </a>
         @Model.Sandooq.name
     </h4>
-    <span class="badge bg-primary">
+    <span class="badge bg-secondary">
         اجمالي المدخولات
         @Model.TotalIncomes ريال
+    </span>
+    <span class="badge bg-secondary">
+        اجمالي المصاريف @Model.TotalExpenses ريال
+    </span>
+    <span class="badge bg-secondary">
+        الرصيد المتاح @Model.AvailableBalance ريال
 
-
-        <button id="btnShowAddIncomeModal" class="btn btn-dark btn-sm">
-            <span class="fa fa-plus"></span>
-        </button>
+    </span>
+    <span class="badge bg-secondary">
+        رصيد الصندوق @Model.TotalBalance ريال
 
 
     </span>
     <span class="badge bg-secondary">
-        اجمالي المصاريف @Model.TotalExpenses ريال
-
-
-        <button id="btnShowAddExpenseModal" class="btn btn-dark btn-sm">
-            <span class="fa fa-plus"></span>
-        </button>
-
-    </span>
-    <span class="badge bg-info">
-        الرصيد المتاح @Model.AvailableBalance ريال
-
-        <button disabled class="btn btn-info btn-sm">
-            <span class="fa "></span>
-        </button>
-
-    </span>
-    <span class="badge bg-info">
         نسبة السداد: @Model.RepaymentRate %
-
-        <button disabled class="btn btn-info btn-sm">
-            <span class="fa "></span>
-        </button>
-
     </span>
+    <hr />
+
+    <button id="btnShowAddIncomeModal" class="btn btn-success btn-sm">
+        <span class="fa fa-plus"></span>
+        <span>اضافة عملية دخل</span>
+    </button>
+    <button id="btnShowAddExpenseModal" class="btn btn-danger btn-sm">
+        <span class="fa fa-plus"</span>
+        <span>اضافة عملية سحب</span>
+    </button>
     <hr />
     <span class="card-title">الاعضاء:</span>
     <br />
@@ -242,7 +235,10 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">اضافة مصروف جديدة الى صندوق @Model.Sandooq.name</h5>
+                    <h5 class="modal-title">اضافة مصروف جديد الى صندوق @Model.Sandooq.name</h5>
+                </div>
+                <div class="modal-title text-center text-pr">
+                    <h5>رصيد الصندوق: @Model.TotalBalance</h5>
                 </div>
                 <div class="modal-body">
                     @{

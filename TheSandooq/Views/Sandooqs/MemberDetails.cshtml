@@ -1,82 +1,110 @@
-﻿@using TheSandooq.Models
-@model MemberSandooqDetailsViewModel
+﻿@model TheSandooq.Models.MemberLoungeViewModel
+@using TheSandooq.Models
+@{
+    ViewBag.Title = "";
+    string currentUserId = ViewBag.CurrentUserId != null ? (string)ViewBag.CurrentUserId : null;
+}
+@if (ViewBag.message != null)
+{
+    <hr />
+    <div class="text-center alert @((ViewBag.isSuccess == true? "alert-success":"alert-danger"))">
+        @ViewBag.message
+    </div>
+    <hr />
+}
+
 <div class="container">
+
     <br />
-    <h4>
-        <a href="@Url.Action("Details","Sandooqs",new { id = Model.sandooqID})" class="btn btn-sm btn-dark">
-            <span class="fa fa-arrow-right"></span>
-        </a>
 
-        @Model.sandooqName<span class=" fa fa-arrow-left"></span> @Model.memberFullName
-    </h4>
-    <span class="card-subtitle">المصروفات</span>
-    <div class="row">
-        @if (Model.memberExpenses.Count > 0)
-        {
-            foreach (Expense e in Model.memberExpenses.OrderByDescending(e => e.id))
-            {
-                <div class="card  m-3" style="min-width: 250px; max-width:300px">
-                    <div class="card-header row text-light bg-secondary">
-
-                        <div class="col col-10">
-                            @e.id -  @e.Category.name
-                        </div>
-                        <div class="col col-2">
-                            <form action="DeleteExpense">
-
-                            </form>
-                            <button class="btn btn-danger">
-                                <span class="fa fa-trash"></span>
-                            </button>
-                        </div>
-                        @*
-           <div class="col col-2">
-            <button class="btn btn-warning">
-                <span class="fa fa-edit"></span>
-            </button>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item mx-1">
+            <a href="@Url.Action("Details","Sandooqs")?id=@Model.SandooqId" class="btn btn-sm btn-dark">
+                <span class="fa fa-arrow-right"></span>
+            </a>
+        </li>
+        <li class="breadcrumb-item mx-1">@Model.SandooqName</li>
+        <li class="breadcrumb-item mx-1 active">@Model.MemberName</li>
+    </ol>
+    <div class="row m-2">
+        <div class="card text-center col-3">
+            <div class="card-header">
+                الرصيد المتاح في الصندوق
+            </div>
+            <div class="card-body">
+                <h2>@Model.MemberAvailableBalance</h2>
+            </div>
         </div>
-                        *@
-                    </div>
-                    <div class="card-body">
-                        المبلغ: @e.amount ريال
-                    </div>
-                </div>
-            }
-        }
+        <div class="card text-center col-3">
+            <div class="card-header">
+                اجمالي المبالغ المدفوعة
+            </div>
+            <div class="card-body">
+                <h2>@Model.MemberTotalIncomes</h2>
+            </div>
+        </div>
+        <div class="card text-center col-3">
+            <div class="card-header">
+                اجمالي المبالغ المسحوبة
+            </div>
+            <div class="card-body">
+                <h2>@Model.MemberTotalExpenses</h2>
+            </div>
+        </div>
+        <div class="card text-center col-3">
+            <div class="card-header">
+                نسبة السداد
+            </div>
+            <div class="card-body">
+                <h2>@Model.MemberRepaymentRate %</h2>
+            </div>
+        </div>
     </div>
-    <span class="card-subtitle">المدخولات</span>
-    <div class="row">
-        @if (Model.memberIncomes.Count > 0)
-        {
-            foreach (Income i in Model.memberIncomes.Where(i => i.member.Id.Equals(Model.memberID)).OrderByDescending(i => i.id))
-            {
-                <div class="card  m-3" style="min-width: 250px; max-width:300px">
-                    <div class="card-header row text-light bg-primary">
+    <br />
+    <div class="card">
+        <div class="card-body">
+            <div class="card-header">سجل العمليات</div>
 
-                        <div class="col col-10">
-                            @i.id -  @i.Category.name
-                        </div>
-                        <div class="col col-2">
-                            <button class="btn btn-danger">
-                                <span class="fa fa-trash"></span>
-                            </button>
-                        </div>
-                        @*
+            <div class="card-text row">
+                @foreach (var trans in Model.MemberTransactions)
+                {
+                    <div class="card m-2 text-center col-2 @(trans.Category.isIncome ? "bg-success" : "bg-danger")">
+                        <div class="card-body ">
+                            <table class="table  text-light">
+                                <tr>
 
-        <div class="col col-2">
-            <button class="btn btn-warning">
-                <span class="fa fa-edit"></span>
-            </button>
-        </div>*@
+                                    <th>نوع العملية</th>
+                                    <th>المبلغ</th>
+                                </tr>
+
+
+                                <tr>
+                                    <td>
+
+                                        @trans.Category.name
+                                    </td>
+                                    <td>
+                                        @trans.CalculatedAmount
+                                    </td>
+                                </tr>
+
+
+
+                            </table>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        المبلغ: @i.amount ريال
-                    </div>
-                </div>
-            }
-        }
+                }
+            </div>
+        </div>
     </div>
-
 
 </div>
+
+
+<script>
+
+
+
+</script>
+
 
