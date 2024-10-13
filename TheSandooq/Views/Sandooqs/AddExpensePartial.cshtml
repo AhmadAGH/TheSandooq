@@ -35,12 +35,12 @@
                 <select disabled onchange="checkAmount()" name="memberID" id="memberID" class="form-control form-select">
                     <option selected class="- - -" value="-1">---</option>
                     @{
-                        double sandooqBalance = Model.sandooq.GetBalance();
+                        double sandooqBalance = Model.Sandooq.GetBalance();
                     }
                     @foreach (ApplicationUser member in Model.sandooqMembers)
                     {
-                        double memberBalance = Model.sandooq.GetBalance(member.Id);
-                        double availableBalance = Model.sandooq.GetAvailableBalance(member.Id);
+                        double memberBalance = Model.Sandooq.GetBalance(member.Id);
+                        double availableBalance = Model.Sandooq.GetAvailableBalance(member.Id);
                         <option class="@memberBalance  @availableBalance+1  @sandooqBalance+2" value="@member.Id">
                             @member.FullName | @memberBalance
                         </option>
@@ -56,6 +56,15 @@
             <div class="checkbox">
                 @Html.TextBoxFor(model => model.amount, new { id = "amountInput", Type = "number", @class = "form-control"})
                 @Html.ValidationMessageFor(model => model.amount, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.TransactionDate, htmlAttributes: new { @class = "control-label col-md-5" })
+        <div class="">
+            <div class="checkbox">
+                @Html.TextBoxFor(model => model.TransactionDate, new { Type = "datetime-local", @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.TransactionDate, "", new { @class = "text-danger" })
             </div>
         </div>
     </div>
@@ -76,7 +85,7 @@
         }
     }
     function checkAmount() {
-        console.log(isRequireMember);
+        
         if (isRequireMember == 'True') {
             var memberBalance = parseFloat($('select[name="memberID"] :selected')[1].classList[0]) ;
             var availbaleBalance = parseFloat($('select[name="memberID"] :selected')[1].classList[1].substring(0, $('select[name="memberID"] :selected')[1].classList[1].indexOf("+"))) ;
@@ -84,7 +93,9 @@
                 
                 if (isRequireMember == 'True') {
                     var expenseAmount = parseFloat($("#amountInput").val()) ;
-                    
+                    console.log(expenseAmount);
+                    console.log(availbaleBalance);
+                    console.log(memberBalance);
                     if (availbaleBalance < expenseAmount) {
                         $("#btnSaveExpense").prop('disabled', true);
                         $("#alert").show(1000)

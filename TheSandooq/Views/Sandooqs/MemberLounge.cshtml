@@ -1,5 +1,4 @@
-﻿
-@model TheSandooq.Models.Sandooq
+﻿@model TheSandooq.Models.MemberLoungeViewModel
 @using TheSandooq.Models
 @{
     ViewBag.Title = "";
@@ -18,32 +17,89 @@
 
     <br />
 
-    <h4>
-        <a href="@Url.Action("Index","Sandooqs")" class="btn btn-sm btn-dark">
-            <span class="fa fa-arrow-right"></span>
-        </a>
-    </h4>
-    <span class="badge bg-primary">
-    اجمالي مدخولات الصندوق
-    @Model.GetTotalIncomes() ريال
-
-
-</span>
-<span class="badge bg-secondary">
-    اجمالي مصاريف الصندوق @Model.GetTotalExpenses()
-    ريال
-
-</span>
-<span class="badge bg-info">
-    الرصيد المتاح لك @Model.GetAvailableBalance(currentUserId) ريال
-
-</span>
-<span class="badge bg-info">
-    نسبة السداد للصندوق: @Model.GetRepaymentRate() %
-
-</span>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item mx-1">
+            <a href="@Url.Action("Index","Sandooqs")" class="btn btn-sm btn-dark">
+                <span class="fa fa-arrow-right"></span>
+            </a>
+        </li>
+        <li class="breadcrumb-item mx-1">@Model.SandooqName</li>
+        <li class="breadcrumb-item mx-1 active">@Model.MemberName</li>
+    </ol>
+    <div class="row m-2">
+        <div class="card text-center col-3">
+            <div class="card-header">
+                رصيدك المتاح في الصندوق
+            </div>
+            <div class="card-body">
+                <h2>@Model.MemberAvailableBalance</h2>
+            </div>
+        </div>
+        <div class="card text-center col-3">
+            <div class="card-header">
+                اجمالي المبالغ المدفوعة
+            </div>
+            <div class="card-body">
+                <h2>@Model.MemberTotalIncomes</h2>
+            </div>
+        </div>
+        <div class="card text-center col-3">
+            <div class="card-header">
+               اجمالي المبالغ المسحوبة
+            </div>
+            <div class="card-body">
+                <h2>@Model.MemberTotalExpenses</h2>
+            </div>
+        </div>
+        <div class="card text-center col-3">
+            <div class="card-header">
+                نسبة السداد
+            </div>
+            <div class="card-body">
+                <h2>@Model.MemberRepaymentRate %</h2>
+            </div>
+        </div>
     </div>
-    
+    <br />
+    <div class="card">
+        <div class="card-body">
+            <div class="card-header">سجل العمليات</div>
+            
+            <div class="card-text row">
+                @foreach (var trans in Model.MemberTransactions)
+                {
+                    <div class="card m-2 text-center col-2 @(trans.Category.isIncome ? "bg-success" : "bg-danger")">
+                        <div class="card-body ">
+                            <table class="table  text-light">
+                                <tr>
+
+                                    <th>نوع العملية</th>
+                                    <th>المبلغ</th>
+                                </tr>
+
+
+                                <tr>
+                                    <td>
+
+                                        @trans.Category.name
+                                    </td>
+                                    <td>
+                                        @trans.CalculatedAmount
+                                    </td>
+                                </tr>
+
+
+
+                            </table>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+</div>
+
 
 <script>
 

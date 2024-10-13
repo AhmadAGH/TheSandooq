@@ -50,7 +50,13 @@ namespace TheSandooq.Models
         public double amount { get; set; }
         [Display(Name = "الفئة")]
         [Required(ErrorMessage = "يجب اختيار الفئة")]
+
         public int categoryID { get; set; }
+        [Display(Name = "تاريخ العملية")]
+        [Required(ErrorMessage = "يجب ادخال التاريخ")]
+        public DateTime TransactionDate { get; set; }
+        [Display(Name = "العضو")]
+        [Required(ErrorMessage = "يجب اختيار العضو")]
         public string memberID { get; set; }
         public int sandooqID { get; set; }
 
@@ -72,11 +78,16 @@ namespace TheSandooq.Models
         [Display(Name = "الفئة")]
         [Required(ErrorMessage = "يجب اختيار الفئة")]
         public int categoryID { get; set; }
+        [Display(Name = "تاريخ العملية")]
+        [Required(ErrorMessage = "يجب ادخال التاريخ")]
+        public DateTime TransactionDate { get; set; }
+
         [Display(Name = "العضو")]
-        
+        [Required(ErrorMessage = "يجب اختيار العضو")]
         public string memberID { get; set; }
         public int sandooqID { get; set; }
-        public Sandooq sandooq { get; set; }
+
+        public Sandooq Sandooq { get; set; }
         public List<Category> sandooqCategories { get; set; }
         public List<ApplicationUser> sandooqMembers { get; set; }
     }

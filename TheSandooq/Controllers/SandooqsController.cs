@@ -346,16 +346,20 @@ namespace TheSandooq.Controllers
         {
             ModelState.Remove("sandooqMembers");
             ModelState.Remove("sandooqCategories");
+            Income income = new Income();
+            income.Category = _dbContext.dbCategories.Find(model.categoryID);
+            if(income.Category != null && !income.Category.isRequireMember)
+            {
+                ModelState.Remove("memberID");
+            }
             if (ModelState.IsValid)
             {
-                Income income = new Income();
-                income.category = _dbContext.dbCategories.Find(model.categoryID);
                 income.sandooq = _dbContext.dbSandooqs.Find(model.sandooqID);
-                if (income.category.isRequireMember && string.IsNullOrEmpty(model.memberID))
+                if (income.Category.isRequireMember && string.IsNullOrEmpty(model.memberID))
                 {
-                    return RedirectToAction("Details", "Sandooqs", new { id = model.sandooqID, message = "الفئة (" + income.category.name + ") تتطلب اختيار عضو", isSuccess = false });
+                    return RedirectToAction("Details", "Sandooqs", new { id = model.sandooqID, message = "الفئة (" + income.Category.name + ") تتطلب اختيار عضو", isSuccess = false });
                 }
-                else if (!income.category.isRequireMember)
+                else if (!income.Category.isRequireMember)
                 {
 
                     int membersCount = income.sandooq.members.Count();
@@ -365,7 +369,7 @@ namespace TheSandooq.Controllers
                     {
                         Income i = new Income
                         {
-                            category = income.category,
+                            Category = income.Category,
                             sandooq = income.sandooq,
                             amount = income.amount,
                             member = member,
@@ -392,13 +396,15 @@ namespace TheSandooq.Controllers
         }
         public async Task<ActionResult> AddExpense(AddExpenseViewModel model)
         {
+            ModelState.Remove("sandooqMembers");
+            ModelState.Remove("sandooqCategories");
             if (ModelState.IsValid)
             {
 
                 Sandooq sandooq = _dbContext.dbSandooqs.Find(model.sandooqID);
                 Expense expense = new Expense();
                 expense.sandooq = sandooq;
-                expense.category = _dbContext.dbCategories.Find(model.categoryID);
+                expense.Category = _dbContext.dbCategories.Find(model.categoryID);
                 if (sandooq.GetBalance() < model.amount)
                 {
                     return RedirectToAction("Details", "Sandooqs", new { id = model.sandooqID, message = "رصيد الصندوق لا يسمح بالسحب", isSuccess = false });
@@ -407,11 +413,11 @@ namespace TheSandooq.Controllers
                 {
                     return RedirectToAction("Details", "Sandooqs", new { id = model.sandooqID, message = "رصيد الصندوق يحتوي على ودائع لا يمكن سحبها الا من صاحبها", isSuccess = false });
                 }
-                else if (expense.category.isRequireMember && string.IsNullOrEmpty(model.memberID))
+                else if (expense.Category.isRequireMember && string.IsNullOrEmpty(model.memberID))
                 {
-                    return RedirectToAction("Details", "Sandooqs", new { id = model.sandooqID, message = "الفئة (" + expense.category.name + ") تتطلب اختيار عضو", isSuccess = false });
+                    return RedirectToAction("Details", "Sandooqs", new { id = model.sandooqID, message = "الفئة (" + expense.Category.name + ") تتطلب اختيار عضو", isSuccess = false });
                 }
-                else if (!expense.category.isRequireMember)
+                else if (!expense.Category.isRequireMember)
                 {
 
                     int membersCount = expense.sandooq.members.Count();
@@ -421,9 +427,10 @@ namespace TheSandooq.Controllers
                     {
                         Expense e = new Expense
                         {
-                            category = expense.category,
+                            Category = expense.Category,
                             sandooq = expense.sandooq,
                             amount = expense.amount,
+                            TransactionDate = expense.TransactionDate,
                             member = member,
                         };
                         expenseDevidedToAllMember.Add(e);
@@ -436,6 +443,7 @@ namespace TheSandooq.Controllers
                 {
                     expense.member = _dbContext.Users.Find(model.memberID);
                     expense.amount = model.amount;
+                    expense.TransactionDate = model.TransactionDate;
                 }
 
 
@@ -457,8 +465,7 @@ namespace TheSandooq.Controllers
             {
                 memberID = member.Id,
                 sandooqID = sandooq.id,
-                memberFullName = member.FullName
-                ,
+                memberFullName = member.FullName,
                 memberExpenses = expenses,
                 memberIncomes = incomes,
                 sandooqName = sandooq.name
@@ -475,7 +482,20 @@ namespace TheSandooq.Controllers
             {
                 return RedirectToAction("Index", "Sandooqs", new { message = "غير مصرح لك الدخول الى هذا الصندوق", isSuccess = false });
             }
-            return View(sandooq);
+
+            MemberLoungeViewModel model = new MemberLoungeViewModel
+            {
+                MemberAvailableBalance = sandooq.GetAvailableBalance(_currentUserId),
+                MemberRepaymentRate = sandooq.GetRepaymentRate(_currentUserId),
+                MemberTotalExpenses = sandooq.GetTotalExpenses(_currentUserId),
+                MemberTotalIncomes = sandooq.GetTotalIncomes(_currentUserId),
+                SandooqName = sandooq.name,
+                MemberName = sandooq.members.FirstOrDefault(m => m.Id == _currentUserId)?.FullName
+            };
+            model.MemberTransactions.AddRange(sandooq.expenses.Where(e => e.member.Id == _currentUserId));
+            model.MemberTransactions.AddRange(sandooq.incomes.Where(i => i.member.Id == _currentUserId));
+
+            return View(model);
 
         }
     }

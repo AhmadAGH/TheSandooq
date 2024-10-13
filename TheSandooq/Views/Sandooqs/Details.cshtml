@@ -246,7 +246,7 @@
                 </div>
                 <div class="modal-body">
                     @{
-                        Html.RenderPartial("AddExpensePartial", new AddExpenseViewModel { sandooq = Model.Sandooq, sandooqID = Model.Sandooq.id, sandooqCategories = Model.Sandooq.categories.ToList(), sandooqMembers = Model.Sandooq.members.ToList() });
+                        Html.RenderPartial("AddExpensePartial", new AddExpenseViewModel { Sandooq = Model.Sandooq, sandooqID = Model.Sandooq.id, sandooqCategories = Model.Sandooq.categories.ToList(), sandooqMembers = Model.Sandooq.members.ToList() });
                     }
                 </div>
                 <div class="modal-footer">

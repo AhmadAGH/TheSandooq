@@ -97,12 +97,15 @@ namespace TheSandooq.Models
 
 
             var sandooq = this;
-            double availableBalance = sandooq.incomes.Sum(i => i.amount) - sandooq.expenses.Sum(e => e.amount);
+            double availableBalance = 
+                sandooq.incomes.Where(i=> string.IsNullOrEmpty(userID) || i.member.Id == userID).Sum(i => i.amount) 
+                - 
+                sandooq.expenses.Where(i => string.IsNullOrEmpty(userID) || i.member.Id == userID).Sum(e => e.amount);
             if (string.IsNullOrEmpty(userID))
             {
                 foreach (Income i in sandooq.incomes)
                 {
-                    if (i.category.mainCategoryType.HasValue && i.category.mainCategoryType == MainCategories.DPI)
+                    if (i.Category.mainCategoryType.HasValue && i.Category.mainCategoryType == MainCategories.DPI)
                     {
                         availableBalance -= i.amount;
                     }
@@ -110,13 +113,13 @@ namespace TheSandooq.Models
                 return availableBalance;
             }
 
-            foreach (Income i in sandooq.incomes)
-            {
-                if (i.category.mainCategoryType.HasValue && i.category.mainCategoryType == MainCategories.DPI && !i.member.Id.Equals(userID))
-                {
-                    availableBalance -= i.amount;
-                }
-            }
+            //foreach (Income i in sandooq.incomes)
+            //{
+            //    if (i.Category.mainCategoryType.HasValue && i.Category.mainCategoryType == MainCategories.DPI && !i.member.Id.Equals(userID))
+            //    {
+            //        availableBalance -= i.amount;
+            //    }
+            //}
             return availableBalance;
 
 
@@ -137,7 +140,7 @@ namespace TheSandooq.Models
                 {
                     foreach (Income i in sandooq.incomes)
                     {
-                        if (i.category.mainCategoryType.HasValue && i.category.id == categoryID)
+                        if (i.Category.mainCategoryType.HasValue && i.Category.id == categoryID)
                         {
                             totalAmount += i.amount;
                         }
@@ -147,7 +150,7 @@ namespace TheSandooq.Models
                 {
                     foreach (Income i in sandooq.incomes)
                     {
-                        if (i.category.mainCategoryType.HasValue && i.category.id == categoryID && i.member.Id.Equals(userID))
+                        if (i.Category.mainCategoryType.HasValue && i.Category.id == categoryID && i.member.Id.Equals(userID))
                         {
                             totalAmount += i.amount;
                         }
@@ -160,7 +163,7 @@ namespace TheSandooq.Models
                 {
                     foreach (Expense e in sandooq.expenses)
                     {
-                        if (e.category.mainCategoryType.HasValue && e.category.id == categoryID)
+                        if (e.Category.mainCategoryType.HasValue && e.Category.id == categoryID)
                         {
                             totalAmount += e.amount;
                         }
@@ -170,7 +173,7 @@ namespace TheSandooq.Models
                 {
                     foreach (Expense e in sandooq.expenses)
                     {
-                        if (e.category.mainCategoryType.HasValue && e.category.id == categoryID && e.member.Id.Equals(userID))
+                        if (e.Category.mainCategoryType.HasValue && e.Category.id == categoryID && e.member.Id.Equals(userID))
                         {
                             totalAmount += e.amount;
                         }

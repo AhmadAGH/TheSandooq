@@ -12,8 +12,8 @@ using TheSandooq.Data;
 namespace TheSandooq.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241011212852_m2")]
-    partial class m2
+    [Migration("20241012231838_m3")]
+    partial class m3
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -294,6 +294,9 @@ namespace TheSandooq.Migrations
                     b.Property<int>("SandooqId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("TransactionDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<double>("amount")
                         .HasColumnType("float");
 
@@ -328,6 +331,9 @@ namespace TheSandooq.Migrations
 
                     b.Property<int>("SandooqId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("TransactionDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<double>("amount")
                         .HasColumnType("float");

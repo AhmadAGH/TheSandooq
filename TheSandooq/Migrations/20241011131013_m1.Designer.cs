@@ -456,7 +456,7 @@ namespace TheSandooq.Migrations
 
             modelBuilder.Entity("TheSandooq.Models.Expense", b =>
                 {
-                    b.HasOne("TheSandooq.Models.Category", "category")
+                    b.HasOne("TheSandooq.Models.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -472,7 +472,7 @@ namespace TheSandooq.Migrations
                         .WithMany("Expenses")
                         .HasForeignKey("memberId");
 
-                    b.Navigation("category");
+                    b.Navigation("Category");
 
                     b.Navigation("member");
 
@@ -481,7 +481,7 @@ namespace TheSandooq.Migrations
 
             modelBuilder.Entity("TheSandooq.Models.Income", b =>
                 {
-                    b.HasOne("TheSandooq.Models.Category", "category")
+                    b.HasOne("TheSandooq.Models.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -499,7 +499,7 @@ namespace TheSandooq.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("category");
+                    b.Navigation("Category");
 
                     b.Navigation("member");
 
