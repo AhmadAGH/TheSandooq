@@ -42,6 +42,7 @@ namespace TheSandooq.Controllers
                 ViewBag.message = message;
                 ViewBag.isSuccess = isSuccess;
             }
+            
             var sandooqs = _dbContext.dbSandooqs.Where(s => s.creator.Email.Equals(User.Identity.Name) || s.members.Any(m => m.Id == _currentUserId)).ToList();
             return View(sandooqs);
         }

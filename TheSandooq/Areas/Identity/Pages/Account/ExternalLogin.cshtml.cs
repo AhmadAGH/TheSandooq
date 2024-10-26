@@ -105,6 +105,11 @@ namespace TheSandooq.Areas.Identity.Pages.Account
                 ErrorMessage = $"Error from external provider: {remoteError}";
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
+            var state = HttpContext.Request.Query["state"];
+            var code = HttpContext.Request.Query["code"];
+
+            _logger.LogDebug("Google external login callback received. State: {State}, Code: {Code}", state, code);
+
             var info = await _signInManager.GetExternalLoginInfoAsync();
             if (info == null)
             {
