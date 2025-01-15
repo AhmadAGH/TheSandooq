@@ -408,6 +408,17 @@ namespace TheSandooq.Controllers
                 Expense expense = new Expense();
                 expense.sandooq = sandooq;
                 expense.Category = _dbContext.dbCategories.Find(model.categoryID);
+                if (expense.Category.mainCategoryType == MainCategories.DPE)
+                {
+                    double memberTotalDepositsIncomes = sandooq.GetTotalAmountByMainCategory(MainCategories.DPI, model.memberID);
+                    double memberTotalDepositsExpenses = sandooq.GetTotalAmountByCategory(model.categoryID, model.memberID);
+                    double memberAvailableDeposit = memberTotalDepositsIncomes - memberTotalDepositsExpenses;
+                    if (memberAvailableDeposit < model.amount)
+                    {
+                        return RedirectToAction("Details", "Sandooqs", new { id = model.sandooqID, message = "مجموع ودائع العضو المتاحة اقل من المبلغ المطلوب", isSuccess = false });
+                    }
+                }
+
                 if (sandooq.GetBalance() < model.amount)
                 {
                     return RedirectToAction("Details", "Sandooqs", new { id = model.sandooqID, message = "رصيد الصندوق لا يسمح بالسحب", isSuccess = false });

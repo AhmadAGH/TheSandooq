@@ -196,12 +196,78 @@ namespace TheSandooq.Models
 
 
         }
+
+        public double GetTotalAmountByMainCategory(MainCategories mainCategory, string userID = "")
+        {
+
+            double totalAmount = 0;
+            var sandooq = this;
+            Category? category = sandooq.categories.FirstOrDefault(c => c.mainCategoryType == mainCategory);
+            if (category == null)
+            {
+                return totalAmount;
+            }
+            if (category.isIncome)
+            {
+                if (string.IsNullOrEmpty(userID))
+                {
+                    foreach (Income i in sandooq.incomes)
+                    {
+                        if (i.Category.mainCategoryType.HasValue && i.Category.mainCategoryType == mainCategory)
+                        {
+                            totalAmount += i.amount;
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (Income i in sandooq.incomes)
+                    {
+                        if (i.Category.mainCategoryType.HasValue && i.Category.mainCategoryType == mainCategory && i.member.Id.Equals(userID))
+                        {
+                            totalAmount += i.amount;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(userID))
+                {
+                    foreach (Expense e in sandooq.expenses)
+                    {
+                        if (e.Category.mainCategoryType.HasValue && e.Category.mainCategoryType == mainCategory)
+                        {
+                            totalAmount += e.amount;
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (Expense e in sandooq.expenses)
+                    {
+                        if (e.Category.mainCategoryType.HasValue && e.Category.mainCategoryType == mainCategory && e.member.Id.Equals(userID))
+                        {
+                            totalAmount += e.amount;
+                        }
+                    }
+                }
+            }
+
+            return totalAmount;
+
+
+        }
         public double GetRepaymentRate(string userID = "")
         {
 
             var sandooq = this;
             Category? paymentCat = sandooq.categories.FirstOrDefault(c => c.mainCategoryType == MainCategories.PYM);
             Category? loanCat = sandooq.categories.FirstOrDefault(c => c.mainCategoryType == MainCategories.LON);
+            if(paymentCat == null || loanCat == null)
+            {
+                return 100;
+            }
             double totalPayments = this.GetTotalAmountByCategory( paymentCat.id, userID);
             double totalLoans = this.GetTotalAmountByCategory(loanCat.id, userID);
             if (totalLoans == 0)
@@ -223,9 +289,21 @@ namespace TheSandooq.Models
 
     }
 
-
+    /// <summary>
+    /// Typs Of Main categorys in all sandooqs:
+    /// قسط - PYM
+    /// وديعة - DPI
+    /// سداد - PAY
+    /// عائد استثماري - IVI
+    /// سلفة - LON
+    /// سحب وديعة - DPE
+    /// سحب اصول - ALL
+    /// استثمار - IVE
+    /// زكاة - ZKH
+    /// </summary>
     public enum MainCategories
     {
+
         PYM,
         DPI,
         PAY,

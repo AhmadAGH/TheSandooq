@@ -93,9 +93,7 @@
                 
                 if (isRequireMember == 'True') {
                     var expenseAmount = parseFloat($("#amountInput").val()) ;
-                    console.log(expenseAmount);
-                    console.log(availbaleBalance);
-                    console.log(memberBalance);
+                    
                     if (availbaleBalance < expenseAmount) {
                         $("#btnSaveExpense").prop('disabled', true);
                         $("#alert").show(1000)
