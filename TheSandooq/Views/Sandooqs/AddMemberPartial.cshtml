@@ -26,6 +26,8 @@
                     <div class="col-lg-10">
                         @Html.EditorFor(m => m.MemberEmail, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(m => m.MemberEmail, "", new { @class = "text-danger" })
+                        @Html.LabelFor(m => m.SendEmailConfirmation, htmlAttributes: new { @class = "control-label col-md-5" })
+                        @Html.CheckBoxFor(m=>m.SendEmailConfirmation,new {@class = ""})
                     </div>
                 </div>
             </td>

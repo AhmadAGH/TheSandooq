@@ -248,10 +248,15 @@ namespace TheSandooq.Controllers
                         // If user creation fails, return an error message
                         return RedirectToAction("Details", "Sandooqs", new { model.SandooqId, message = "تعذر انشاء المستخدم !", isSuccess = false });
                     }
-                    // Get the newly created user from the database
-                    member = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == member.Email);
-                    // Send password reset link to new user
-                    SendPasswordLinkToMemberAsync(member.Id);
+
+                    if (model.SendEmailConfirmation)
+                    {
+                        // Get the newly created user from the database
+                        member = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == member.Email);
+                        // Send password reset link to new user
+                        SendPasswordLinkToMemberAsync(member.Id);
+                    }
+                    
                 }
                 else
                 {
@@ -276,7 +281,7 @@ namespace TheSandooq.Controllers
                 return RedirectToAction("Details", "Sandooqs", new
                 {
                     sandooq.id,
-                    message = isNewUser ? "تم اضافة العضو وارسال الدعوة  بنجاح" : "تم اضافة العضو بنجاح",
+                    message = isNewUser && model.SendEmailConfirmation ? "تم اضافة العضو وارسال الدعوة  بنجاح" : "تم اضافة العضو بنجاح",
                     isSuccess = true
                 });
 

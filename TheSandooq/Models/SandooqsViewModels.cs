@@ -17,6 +17,9 @@ namespace TheSandooq.Models
         [Required(ErrorMessage = "الايميل مطلوب")]
         [Display(Name = "الايميل")]
         public string MemberEmail { get; set; }
+        
+        [Display(Name = "إرسال رابط تفعيل للمستخدم ؟")]
+        public bool SendEmailConfirmation { get; set; }
 
         [Required]
         public int SandooqId { get; set; }
