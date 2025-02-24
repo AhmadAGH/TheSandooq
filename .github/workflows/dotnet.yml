@@ -47,7 +47,7 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           password: ${{ secrets.VPS_PASS }}
           port: 22
-          source: "bin/Release/net8.0/publish/"   # Adjust if your target framework or project structure differs
+          source: "/home/runner/work/TheSandooq/TheSandooq/TheSandooq/bin/Release/net8.0/publish/"   # Adjust if your target framework or project structure differs
           target: "/mnt/deployments/TheSandooq/"
 
       # Run deployment commands on your VPS using SSH
