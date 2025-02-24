@@ -1,4 +1,4 @@
-name: .NET
+name: .NET CI/CD
 
 on:
   push:
@@ -9,7 +9,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
@@ -27,8 +26,23 @@ jobs:
       - name: Publish
         run: dotnet publish -c Release
 
-      # Clean target directory before deployment
-      - name: Clean target directory
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: published
+          path: bin/Release/net8.0/publish/
+          
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: published
+          path: publish_output
+
+      - name: Clean target directory on VPS
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.VPS_HOST }}
@@ -39,7 +53,6 @@ jobs:
             rm -rf /mnt/deployments/TheSandooq/*
             mkdir -p /mnt/deployments/TheSandooq/
 
-      # Deploy via SCP using the default publish location
       - name: Deploy via SCP
         uses: appleboy/scp-action@master
         with:
@@ -47,11 +60,10 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           password: ${{ secrets.VPS_PASS }}
           port: 22
-          source: "/home/runner/work/TheSandooq/TheSandooq/TheSandooq/bin/Release/net8.0/publish/"   # Adjust if your target framework or project structure differs
+          source: "publish_output/"
           target: "/mnt/deployments/TheSandooq/"
 
-      # Run deployment commands on your VPS using SSH
-      - name: Run SSH commands
+      - name: Run deployment commands on VPS
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.VPS_HOST }}
