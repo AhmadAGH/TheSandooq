@@ -60,8 +60,9 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           password: ${{ secrets.VPS_PASS }}
           port: 22
-          source: "publish_output/*"
+          source: "publish_output/"
           target: "/mnt/deployments/TheSandooq/"
+          strip_components: 1
 
       - name: Run deployment commands on VPS
         uses: appleboy/ssh-action@master
