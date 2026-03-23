@@ -1,0 +1,61 @@
+name: Deploy TalabLink
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Publish
+        run: dotnet publish -c Release -o ./publish
+
+      - name: Copy files to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: 46.202.154.67
+          username: root
+          password: ${{ secrets.HOSTINGER_SSH_PASSWORD }}
+          source: "./publish/*"
+          target: "apps/TalabLink"
+          strip_components: 1
+
+      - name: Write appsettings.Prod.json
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: 46.202.154.67
+          username: root
+          password: ${{ secrets.HOSTINGER_SSH_PASSWORD }}
+          script: |
+            cat > /root/apps/TalabLink/appsettings.Production.json << 'EOF'
+            {
+              "ConnectionStrings": {
+                "DefaultConnection": "${{ secrets.TALABLINK_DB_CONNSTR }}"
+              },
+              "Firebase": {
+                "CredentialPath": "/root/apps/TalabLink/talablink-dea02-firebase-adminsdk-fbsvc-8637a46d79.json"
+              }
+            }
+            EOF
+
+      - name: Restart service
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: 46.202.154.67
+          username: root
+          password: ${{ secrets.HOSTINGER_SSH_PASSWORD }}
+          script: systemctl restart talablink
